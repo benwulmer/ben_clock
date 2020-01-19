@@ -1,0 +1,33 @@
+name: digital_clock
+description: Digital clock.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_clock_helper:
+    path: ../flutter_clock_helper
+  cupertino_icons: ^0.1.2
+  image: 2.1.4
+  tuple: 1.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+  - assets/0.png
+  - assets/1.png
+  - assets/2.png
+  - assets/3.png
+  - assets/4.png
+  - assets/5.png
+  - assets/6.png
+  - assets/7.png
+  - assets/8.png
+  - assets/9.png
