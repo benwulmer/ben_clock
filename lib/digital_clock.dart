@@ -409,7 +409,6 @@ class AccessibilityHelper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("$hour $minute");
     return Semantics(
       child: Container(
         child: SizedBox.expand(
