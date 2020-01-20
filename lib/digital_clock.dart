@@ -54,8 +54,8 @@ class _SciFiClockState extends State<SciFiClock> {
   // Whether the assets have been loaded and parsed into the models.
   bool loaded = false;
 
-  // How many pixels to display across the width of the screen.
-  static const pixelsWide = 50;
+  // How many pixels to display across the width of the scree
+  static const pixelsWide = 72;
 
   // The ratio of the width to height of the screen.
   static const heightRatio = 5 / 3;
