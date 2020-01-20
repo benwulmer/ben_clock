@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -7,113 +6,15 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart';
 import 'package:tuple/tuple.dart';
 
-List<List<List<bool>>> getDigits() {
-  final zero = [
-    [true, true, true],
-    [true, false, true],
-    [true, false, true],
-    [true, false, true],
-    [true, true, true],
-  ];
-  final one = [
-    [false, true, false],
-    [false, true, false],
-    [false, true, false],
-    [false, true, false],
-    [false, true, false],
-  ];
-  final two = [
-    [true, true, true],
-    [false, false, true],
-    [true, true, true],
-    [true, false, false],
-    [true, true, true],
-  ];
-  final three = [
-    [true, true, true],
-    [false, false, true],
-    [true, true, true],
-    [false, false, true],
-    [true, true, true],
-  ];
-  final four = [
-    [true, false, true],
-    [true, false, true],
-    [true, true, true],
-    [false, false, true],
-    [false, false, true],
-  ];
-  final five = [
-    [true, true, true],
-    [true, false, false],
-    [true, true, true],
-    [false, false, true],
-    [true, true, true],
-  ];
-  final six = [
-    [true, true, true],
-    [true, false, false],
-    [true, true, true],
-    [true, false, true],
-    [true, true, true],
-  ];
-  final seven = [
-    [true, true, true],
-    [false, false, true],
-    [false, false, true],
-    [false, false, true],
-    [false, false, true],
-  ];
-  final eight = [
-    [true, true, true],
-    [true, false, true],
-    [true, true, true],
-    [true, false, true],
-    [true, true, true],
-  ];
-  final nine = [
-    [true, true, true],
-    [true, false, true],
-    [true, true, true],
-    [false, false, true],
-    [false, false, true],
-  ];
-  return [zero, one, two, three, four, five, six, seven, eight, nine];
-}
+/*
+ * This data provider is a set of utility tools for reading assets and parsing
+ * them into grids of bools.
+ */
 
-void addPadding(List<List<bool>> grid) {
-  for (final row in grid) {
-    row.add(false);
-    row.insert(0, false);
-  }
-  final width = grid[0].length;
-  final row = List<bool>.filled(width, false, growable: true);
-  grid.add(row);
-  grid.insert(0, row);
-}
-
-List<List<bool>> increaseDensity(List<List<bool>> grid, int factor) {
-  final height = grid.length;
-  final width = grid[0].length;
-  final newGrid = List<List<bool>>();
-  for (int i = 0; i < height * factor; i++) {
-    final row = List<bool>.filled(width * factor, false, growable: true);
-    newGrid.add(row);
-  }
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
-      if (grid[i][j]) {
-        for (int k = 0; k < factor; k++) {
-          for (int l = 0; l < factor; l++) {
-            newGrid[i * factor + l][j * factor + k] = true;
-          }
-        }
-      }
-    }
-  }
-  return newGrid;
-}
-
+// Loads a digit asset and parses it into a grid of bools of size
+// heightResolution by widthResoltution. A bool in this grid will be true if
+// the area of the asset corresponding to that bool has more 'light' pixels
+// (pixels with a luminance equal or greater to 128) than 'dark' pixels.
 Future<List<List<bool>>> getImagePixels(
   int digit,
   int heightResolution,
@@ -154,6 +55,44 @@ Future<List<List<bool>>> getImagePixels(
   return newGrid;
 }
 
+// Adds a padding of false around a grid of bool.
+void addPadding(List<List<bool>> grid) {
+  for (final row in grid) {
+    row.add(false);
+    row.insert(0, false);
+  }
+  final width = grid[0].length;
+  final row = List<bool>.filled(width, false, growable: true);
+  grid.add(row);
+  grid.insert(0, row);
+}
+
+// Increases resolution of a grid of bools; for example a 3x3 grid that was
+// increased by a factor of 3 would become a 9x9 grid.
+List<List<bool>> increaseResolution(List<List<bool>> grid, int factor) {
+  final height = grid.length;
+  final width = grid[0].length;
+  final newGrid = List<List<bool>>();
+  for (int i = 0; i < height * factor; i++) {
+    final row = List<bool>.filled(width * factor, false, growable: true);
+    newGrid.add(row);
+  }
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      if (grid[i][j]) {
+        for (int k = 0; k < factor; k++) {
+          for (int l = 0; l < factor; l++) {
+            newGrid[i * factor + l][j * factor + k] = true;
+          }
+        }
+      }
+    }
+  }
+  return newGrid;
+}
+
+// Returns of grids of ints, where each int is the number of steps required to
+// reach the closes true value to the passed in grid.
 List<List<int>> getDistances(List<List<bool>> grid) {
   final newGrid = List<List<int>>();
   for (int i = 0; i < grid.length; i++) {
@@ -168,6 +107,8 @@ List<List<int>> getDistances(List<List<bool>> grid) {
   return newGrid;
 }
 
+// Returns the distance between a point and the closest true value in a grid of
+// bools.
 int getDistance(int y, int x, List<List<bool>> grid) {
   if (grid[y][x]) {
     return 0;
